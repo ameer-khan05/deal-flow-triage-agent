@@ -1,0 +1,31 @@
+{
+  "casts": [
+    {
+      "hash": "0xabc123",
+      "author": {"fid": 12345, "username": "buildfast", "displayName": "BuildFast"},
+      "text": "Just shipped v2 of our agent framework! 10x faster inference with streaming support.",
+      "timestamp": "2026-06-21T14:00:00Z",
+      "reactions": {"likes": 120, "recasts": 45},
+      "replies": {"count": 23},
+      "embeds": [{"url": "https://buildfast.dev/v2"}]
+    },
+    {
+      "hash": "0xdef456",
+      "author": {"fid": 67890, "username": "chaincore", "displayName": "Chain Core"},
+      "text": "Bridge v3 is live on mainnet. $5M TVL in first 24 hours.",
+      "timestamp": "2026-06-20T18:00:00Z",
+      "reactions": {"likes": 85, "recasts": 30},
+      "replies": {"count": 15},
+      "embeds": [{"url": "https://chaincore.io/bridge-v3"}]
+    },
+    {
+      "hash": "0xghi789",
+      "author": {"fid": 11111, "username": "cryptoresearcher", "displayName": "Crypto Researcher"},
+      "text": "Interesting new ZK proof scheme could reduce verification costs by 90%",
+      "timestamp": "2026-06-19T22:00:00Z",
+      "reactions": {"likes": 200, "recasts": 70},
+      "replies": {"count": 40},
+      "embeds": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "title": "BuildFast raises $25M Series B for AI agent platform",
+      "link": "https://techcrunch.com/2026/06/15/buildfast-series-b",
+      "pubDate": "2026-06-15T14:00:00Z",
+      "contentSnippet": "BuildFast Inc announced a $25M Series B round led by Sequoia Capital to expand its AI agent development platform.",
+      "creator": "TechCrunch",
+      "categories": ["Startups", "AI", "Funding"]
+    },
+    {
+      "title": "DeFi Labs launches concentrated liquidity pools on Arbitrum",
+      "link": "https://theblock.co/2026/06/18/defi-labs-arbitrum",
+      "pubDate": "2026-06-18T10:00:00Z",
+      "contentSnippet": "DeFi Labs has expanded its decentralized exchange to Arbitrum with a new concentrated liquidity feature.",
+      "creator": "The Block",
+      "categories": ["DeFi", "Ethereum", "L2"]
+    },
+    {
+      "title": "New AI safety startup emerges from stealth with $5M seed",
+      "link": "https://venturebeat.com/2026/06/20/ai-safety-startup",
+      "pubDate": "2026-06-20T08:00:00Z",
+      "contentSnippet": "A new AI safety startup has emerged from stealth mode, securing $5M in seed funding to develop alignment research tools.",
+      "creator": "VentureBeat",
+      "categories": ["AI", "Safety", "Startups"]
+    },
+    {
+      "title": "Chain Core announces ZK bridge audit completion",
+      "link": "https://coindesk.com/2026/06/19/chain-core-zk-audit",
+      "pubDate": "2026-06-19T12:00:00Z",
+      "contentSnippet": "Chain Core's cross-chain bridge has completed its third-party security audit, paving the way for mainnet launch.",
+      "creator": "CoinDesk",
+      "categories": ["Crypto", "Security", "ZK"]
+    }
+  ]
+}

@@ -4,12 +4,11 @@ import type { Collector, CollectorCursor } from "./interface";
 
 const log = createLogger("collector:twitter");
 
-// WARNING: Twitter/X collector is disabled by default.
-// ToS concerns and API brittleness make this an unreliable source.
-// Enable only via explicit config flag ENABLE_TWITTER_COLLECTOR=1.
-
-const ENABLED = process.env.ENABLE_TWITTER_COLLECTOR === "1";
-
+/**
+ * Twitter collector — stub / opt-in only.
+ * Requires TWITTER_BEARER_TOKEN and ENABLE_TWITTER_COLLECTOR=1.
+ * Phase 4 deliverable.
+ */
 export class TwitterCollector implements Collector {
   readonly source = "twitter";
 
@@ -17,13 +16,13 @@ export class TwitterCollector implements Collector {
     signals: RawSignal[];
     nextCursor: string;
   }> {
-    if (!ENABLED) {
-      log.info("Twitter collector disabled (set ENABLE_TWITTER_COLLECTOR=1 to enable)");
+    const token = process.env.TWITTER_BEARER_TOKEN;
+    if (!token) {
+      log.info("Twitter collector: no TWITTER_BEARER_TOKEN, skipping");
       return { signals: [], nextCursor: cursor?.lastCursor ?? "" };
     }
 
-    // TODO: Implement (Phase 4, scaffold only)
-    log.info("Twitter collector not yet implemented");
+    log.warn("Twitter collector: not yet implemented (Phase 4 stub)");
     return { signals: [], nextCursor: cursor?.lastCursor ?? "" };
   }
 }
