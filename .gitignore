@@ -34,7 +34,7 @@ yarn-error.log*
 next-env.d.ts
 
 # drizzle
-/drizzle/meta
+# /drizzle/meta — needed for drizzle-kit migrate
 
 # data
 /data
