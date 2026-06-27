@@ -2,8 +2,7 @@ import { describe, it, expect } from "vitest";
 import { OnchainCollector } from "./onchain";
 import rawFixture from "./__fixtures__/onchain.json";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fixtureData = rawFixture as any;
+const fixtureData = rawFixture as unknown as Parameters<InstanceType<typeof OnchainCollector>["parseResponse"]>[0];
 
 describe("OnchainCollector", () => {
   it("parses fixture data into valid RawSignal[]", () => {
