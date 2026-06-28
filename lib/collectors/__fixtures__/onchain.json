@@ -1,0 +1,43 @@
+{
+  "protocols": [
+    {
+      "id": "defi-labs-swap",
+      "name": "DeFi Labs Swap",
+      "slug": "defi-labs-swap",
+      "tvl": 15000000,
+      "chainTvls": { "ethereum": 12000000, "arbitrum": 3000000 },
+      "change_1d": 2.5,
+      "change_7d": 15.3,
+      "change_1m": 45.0,
+      "chains": ["ethereum", "arbitrum"],
+      "category": "Dexes",
+      "url": "https://defilabs.xyz"
+    },
+    {
+      "id": "chain-core-bridge",
+      "name": "Chain Core Bridge",
+      "slug": "chain-core-bridge",
+      "tvl": 8500000,
+      "chainTvls": { "ethereum": 5000000, "optimism": 3500000 },
+      "change_1d": -1.2,
+      "change_7d": 8.7,
+      "change_1m": 120.0,
+      "chains": ["ethereum", "optimism"],
+      "category": "Bridge",
+      "url": "https://chaincore.io"
+    },
+    {
+      "id": "yield-vault-v3",
+      "name": "Yield Vault V3",
+      "slug": "yield-vault-v3",
+      "tvl": 42000000,
+      "chainTvls": { "ethereum": 30000000, "polygon": 12000000 },
+      "change_1d": 0.8,
+      "change_7d": -3.2,
+      "change_1m": 5.5,
+      "chains": ["ethereum", "polygon"],
+      "category": "Yield",
+      "url": "https://yieldvault.finance"
+    }
+  ]
+}

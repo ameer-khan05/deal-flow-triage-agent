@@ -1,0 +1,34 @@
+{
+  "entries": [
+    {
+      "id": "2406.12345",
+      "title": "Efficient Transformer Architecture for On-Device LLM Inference",
+      "authors": ["Alice Chen", "Bob Smith"],
+      "summary": "We present a novel transformer architecture that enables efficient LLM inference on edge devices with 4x speedup.",
+      "published": "2026-06-20T00:00:00Z",
+      "updated": "2026-06-20T00:00:00Z",
+      "categories": ["cs.LG", "cs.AI"],
+      "link": "https://arxiv.org/abs/2406.12345"
+    },
+    {
+      "id": "2406.67890",
+      "title": "Zero-Knowledge Proofs for DeFi Protocol Verification",
+      "authors": ["Charlie Wang", "Diana Lee"],
+      "summary": "A framework for verifying DeFi protocol correctness using zero-knowledge proofs without revealing proprietary strategies.",
+      "published": "2026-06-18T00:00:00Z",
+      "updated": "2026-06-19T00:00:00Z",
+      "categories": ["cs.CR", "cs.DC"],
+      "link": "https://arxiv.org/abs/2406.67890"
+    },
+    {
+      "id": "2406.11111",
+      "title": "Multi-Agent Reinforcement Learning for Autonomous Trading",
+      "authors": ["Eve Johnson"],
+      "summary": "Multi-agent RL system for coordinating autonomous trading strategies across multiple exchanges.",
+      "published": "2026-06-15T00:00:00Z",
+      "updated": "2026-06-15T00:00:00Z",
+      "categories": ["cs.AI", "cs.MA"],
+      "link": "https://arxiv.org/abs/2406.11111"
+    }
+  ]
+}

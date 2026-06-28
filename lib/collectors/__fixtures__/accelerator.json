@@ -1,0 +1,34 @@
+{
+  "companies": [
+    {
+      "name": "Neural Forge",
+      "batch": "W26",
+      "program": "Y Combinator",
+      "oneLiner": "AI-powered code review and refactoring",
+      "url": "https://neuralforge.dev",
+      "verticals": ["Developer Tools", "AI"],
+      "teamSize": 4,
+      "launched": "2026-06-01"
+    },
+    {
+      "name": "ChainGuard",
+      "batch": "W26",
+      "program": "Y Combinator",
+      "oneLiner": "Automated smart contract auditing",
+      "url": "https://chainguard.io",
+      "verticals": ["Crypto", "Security"],
+      "teamSize": 3,
+      "launched": "2026-05-15"
+    },
+    {
+      "name": "DataMesh",
+      "batch": "S26",
+      "program": "Techstars",
+      "oneLiner": "Federated data infrastructure for ML pipelines",
+      "url": "https://datamesh.ai",
+      "verticals": ["Data", "Infrastructure"],
+      "teamSize": 5,
+      "launched": "2026-06-10"
+    }
+  ]
+}

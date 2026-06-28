@@ -50,5 +50,8 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Migrate DB
+        run: npm run db:migrate
+
       - name: Demo
         run: npm run demo

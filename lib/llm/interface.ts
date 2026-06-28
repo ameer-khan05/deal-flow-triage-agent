@@ -7,8 +7,12 @@ import type {
 } from "@/lib/core/types";
 
 export interface EntityMatchInput {
-  companyA: { name: string; signals: string[] };
-  companyB: { name: string; signals: string[] };
+  signalTitle: string;
+  signalBody?: string;
+  signalSource: string;
+  candidateName: string;
+  candidateDomain?: string | null;
+  candidateGithubOrg?: string | null;
 }
 
 export interface ProfileBuildInput {

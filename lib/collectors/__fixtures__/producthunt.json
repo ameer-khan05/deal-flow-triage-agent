@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "id": 400001,
+      "name": "AgentFlow",
+      "tagline": "Build autonomous AI agents in minutes",
+      "url": "https://www.producthunt.com/posts/agentflow",
+      "votesCount": 450,
+      "commentsCount": 85,
+      "topics": ["AI", "Developer Tools"],
+      "thumbnail": "https://ph-files.imgix.net/agentflow.png",
+      "createdAt": "2026-06-21T08:00:00Z",
+      "makers": [{"name": "Sarah Kim"}]
+    },
+    {
+      "id": 400002,
+      "name": "CryptoBoard",
+      "tagline": "Real-time portfolio tracking for DeFi",
+      "url": "https://www.producthunt.com/posts/cryptoboard",
+      "votesCount": 280,
+      "commentsCount": 42,
+      "topics": ["Crypto", "Finance"],
+      "thumbnail": "https://ph-files.imgix.net/cryptoboard.png",
+      "createdAt": "2026-06-20T10:00:00Z",
+      "makers": [{"name": "Mike Chen"}]
+    }
+  ]
+}

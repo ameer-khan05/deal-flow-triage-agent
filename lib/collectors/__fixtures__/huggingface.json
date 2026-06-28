@@ -1,0 +1,34 @@
+{
+  "models": [
+    {
+      "modelId": "acme-ai/neural-engine-base",
+      "author": "acme-ai",
+      "downloads": 125000,
+      "likes": 340,
+      "tags": ["pytorch", "transformers", "text-generation", "llm"],
+      "lastModified": "2026-06-20T12:00:00Z",
+      "pipeline_tag": "text-generation",
+      "private": false
+    },
+    {
+      "modelId": "stealth-ml/diffusion-opt-v2",
+      "author": "stealth-ml",
+      "downloads": 45000,
+      "likes": 120,
+      "tags": ["diffusion", "image-generation", "optimization"],
+      "lastModified": "2026-06-15T09:00:00Z",
+      "pipeline_tag": "image-to-image",
+      "private": false
+    },
+    {
+      "modelId": "research-lab/multimodal-agent",
+      "author": "research-lab",
+      "downloads": 8000,
+      "likes": 45,
+      "tags": ["multimodal", "agent", "vision-language"],
+      "lastModified": "2026-06-18T16:00:00Z",
+      "pipeline_tag": "visual-question-answering",
+      "private": false
+    }
+  ]
+}
