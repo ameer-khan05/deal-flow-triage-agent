@@ -33,6 +33,7 @@ export async function getDealFeed(filters?: {
       score: schema.scores.score,
       tier: schema.scores.tier,
       rationale: schema.scores.rationale,
+      featureBreakdown: schema.scores.featureBreakdown,
       companyName: schema.companies.name,
       industry: schema.companies.industry,
       isEarlyStealth: schema.companies.isEarlyStealth,
@@ -42,9 +43,9 @@ export async function getDealFeed(filters?: {
       schema.companies,
       eq(schema.scores.companyId, schema.companies.id)
     )
-    .orderBy(desc(schema.scores.score));
+    .orderBy(desc(schema.scores.createdAt));
 
-  // Deduplicate to latest score per company
+  // Deduplicate to latest score per company (first seen = most recent)
   const seen = new Set<number>();
   const results: DealFeedItem[] = [];
 
@@ -68,14 +69,6 @@ export async function getDealFeed(filters?: {
       .select({ count: sql<number>`count(*)::int` })
       .from(schema.signals)
       .where(eq(schema.signals.companyId, row.companyId));
-
-    // Get feature breakdown from latest score
-    const latestScoreRow = await db
-      .select({ featureBreakdown: schema.scores.featureBreakdown })
-      .from(schema.scores)
-      .where(eq(schema.scores.companyId, row.companyId))
-      .orderBy(desc(schema.scores.createdAt))
-      .limit(1);
 
     // Get company details for extra fields
     const companyDetails = await db
@@ -103,10 +96,11 @@ export async function getDealFeed(filters?: {
       topSignal: topSignals[0]?.value ?? null,
       signalCount: signalCountResult[0]?.count ?? 0,
       isEarlyStealth: row.isEarlyStealth,
-      featureBreakdown: latestScoreRow[0]?.featureBreakdown ?? null,
+      featureBreakdown: row.featureBreakdown ?? null,
     });
   }
 
+  results.sort((a, b) => b.score - a.score);
   return results;
 }
 
