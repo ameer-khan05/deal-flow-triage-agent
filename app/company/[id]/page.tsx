@@ -1,10 +1,70 @@
 import { getCompanyDetail } from "@/lib/db/queries";
 import { notFound } from "next/navigation";
 
-function tierColor(tier: string): string {
-  if (tier === "hot") return "#e53e3e";
-  if (tier === "review") return "#dd6b20";
-  return "#718096";
+function tierClass(tier: string): string {
+  if (tier === "hot") return "tier-hot";
+  if (tier === "review") return "tier-review";
+  return "tier-watch";
+}
+
+function scoreColor(score: number): string {
+  if (score >= 75) return "var(--accent-red)";
+  if (score >= 50) return "var(--accent-orange)";
+  if (score >= 25) return "var(--accent-blue)";
+  return "var(--text-muted)";
+}
+
+function featureColor(value: number): string {
+  if (value >= 70) return "var(--accent-green)";
+  if (value >= 40) return "var(--accent-blue)";
+  if (value >= 20) return "var(--accent-orange)";
+  return "var(--text-muted)";
+}
+
+function formatFeatureName(key: string): string {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (s) => s.toUpperCase())
+    .trim();
+}
+
+function timelineSourceClass(source: string): string {
+  const s = source.toLowerCase();
+  if (s === "github") return "timeline-source github";
+  if (s === "onchain") return "timeline-source onchain";
+  if (s === "rss") return "timeline-source rss";
+  if (s === "arxiv") return "timeline-source arxiv";
+  if (s === "producthunt") return "timeline-source producthunt";
+  if (s === "farcaster") return "timeline-source farcaster";
+  if (s === "huggingface") return "timeline-source huggingface";
+  if (s === "accelerator") return "timeline-source accelerator";
+  return "timeline-source";
+}
+
+function sourceLabel(source: string): string {
+  const labels: Record<string, string> = {
+    github: "GH",
+    onchain: "ON",
+    rss: "RSS",
+    arxiv: "arX",
+    producthunt: "PH",
+    farcaster: "FC",
+    huggingface: "HF",
+    accelerator: "ACC",
+    twitter: "TW",
+  };
+  return labels[source.toLowerCase()] ?? source.slice(0, 3).toUpperCase();
+}
+
+function daysAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 30) return `${diffDays}d ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+  return `${Math.floor(diffDays / 365)}y ago`;
 }
 
 export default async function CompanyDetailPage({
@@ -25,143 +85,219 @@ export default async function CompanyDetailPage({
   const latestScore = company.scoreHistory[0];
 
   return (
-    <main style={{ padding: "2rem", fontFamily: "system-ui, sans-serif", maxWidth: "900px", margin: "0 auto" }}>
-      <a href="/" style={{ color: "#3182ce", fontSize: "14px" }}>
-        &larr; Back to feed
+    <main className="container">
+      <a href="/" className="back-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        Back to deal flow
       </a>
 
-      <div style={{ marginTop: "1rem" }}>
-        <h1 style={{ marginBottom: "4px" }}>
-          {company.name}
-          {company.isEarlyStealth && (
-            <span style={{ marginLeft: "8px", fontSize: "14px", color: "#805ad5" }}>
-              STEALTH
-            </span>
+      {/* Company header */}
+      <div className="company-header">
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <h1 className="company-name">{company.name}</h1>
+            {company.isEarlyStealth && <span className="stealth-tag">STEALTH</span>}
+            {latestScore && (
+              <span className={`tier-badge ${tierClass(latestScore.tier)}`} style={{ fontSize: "0.75rem", padding: "0.25rem 0.625rem" }}>
+                {latestScore.tier.toUpperCase()}
+              </span>
+            )}
+          </div>
+          {company.oneLiner && (
+            <p style={{ color: "var(--text-secondary)", fontSize: "1rem", marginTop: "0.5rem" }}>
+              {company.oneLiner}
+            </p>
           )}
-        </h1>
-        {company.oneLiner && (
-          <p style={{ color: "#666", fontSize: "15px", marginTop: 0 }}>
-            {company.oneLiner}
-          </p>
+          <div className="company-meta">
+            {company.industry && <span className="meta-tag">{company.industry}</span>}
+            {company.subSector && <span className="meta-tag">{company.subSector}</span>}
+            {company.estimatedStage && <span className="meta-tag">{company.estimatedStage}</span>}
+          </div>
+        </div>
+        {latestScore && (
+          <div style={{ textAlign: "right" }}>
+            <div className="score-big" style={{ color: scoreColor(latestScore.score) }}>
+              {latestScore.score % 1 === 0 ? latestScore.score : latestScore.score.toFixed(1)}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
+              SCORE
+            </div>
+          </div>
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1.5rem" }}>
-        <div>
-          <strong>Industry:</strong> {company.industry ?? "Unknown"}
-        </div>
-        <div>
-          <strong>Sub-sector:</strong> {company.subSector ?? "Unknown"}
-        </div>
-        <div>
-          <strong>Stage:</strong> {company.estimatedStage ?? "Unknown"}
-        </div>
-        <div>
-          <strong>Domain:</strong> {company.domain ?? "—"}
-        </div>
+      {/* Company info grid */}
+      <div className="info-grid">
+        {company.domain && (
+          <div className="info-item">
+            <div className="info-label">Domain</div>
+            <div className="info-value">
+              <a href={`https://${company.domain}`} style={{ color: "var(--accent-blue)" }} target="_blank" rel="noopener noreferrer">
+                {company.domain}
+              </a>
+            </div>
+          </div>
+        )}
+        {company.githubOrg && (
+          <div className="info-item">
+            <div className="info-label">GitHub</div>
+            <div className="info-value">
+              <a href={`https://github.com/${company.githubOrg}`} style={{ color: "var(--accent-blue)" }} target="_blank" rel="noopener noreferrer">
+                {company.githubOrg}
+              </a>
+            </div>
+          </div>
+        )}
         {company.founders && company.founders.length > 0 && (
-          <div>
-            <strong>Founders:</strong> {company.founders.join(", ")}
+          <div className="info-item">
+            <div className="info-label">Founders</div>
+            <div className="info-value">{company.founders.join(", ")}</div>
           </div>
         )}
         {company.links && Object.keys(company.links).length > 0 && (
-          <div>
-            <strong>Links:</strong>{" "}
-            {Object.entries(company.links).map(([k, v]) => (
-              <a key={k} href={v} style={{ marginRight: "8px", color: "#3182ce" }}>
-                {k}
-              </a>
-            ))}
+          <div className="info-item">
+            <div className="info-label">Links</div>
+            <div className="info-value" style={{ display: "flex", gap: "0.5rem" }}>
+              {Object.entries(company.links).map(([k, v]) => (
+                <a key={k} href={v} style={{ color: "var(--accent-blue)" }} target="_blank" rel="noopener noreferrer">
+                  {k}
+                </a>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
+      {/* Score card with feature breakdown */}
       {latestScore && (
-        <div
-          style={{
-            marginTop: "1.5rem",
-            padding: "1rem",
-            border: "1px solid #e2e8f0",
-            borderRadius: "8px",
-          }}
-        >
-          <h2 style={{ marginTop: 0 }}>Latest Score</h2>
-          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-            <span style={{ fontSize: "28px", fontWeight: 700 }}>
-              {latestScore.score}
-            </span>
-            <span
-              style={{
-                padding: "4px 12px",
-                borderRadius: "4px",
-                color: "white",
-                fontWeight: 600,
-                backgroundColor: tierColor(latestScore.tier),
-              }}
-            >
-              {latestScore.tier.toUpperCase()}
-            </span>
+        <div className="score-card">
+          <div className="score-card-header">
+            <div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Composite Score
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.25rem" }}>
+                <span className="score-big" style={{ color: scoreColor(latestScore.score), fontSize: "2.5rem" }}>
+                  {latestScore.score % 1 === 0 ? latestScore.score : latestScore.score.toFixed(1)}
+                </span>
+                <span style={{ fontSize: "1rem", color: "var(--text-muted)" }}>/ 100</span>
+              </div>
+            </div>
           </div>
           {latestScore.rationale && (
-            <p style={{ color: "#666", marginBottom: 0 }}>{latestScore.rationale}</p>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "1rem" }}>
+              {latestScore.rationale}
+            </p>
           )}
           {latestScore.featureBreakdown && (
-            <div style={{ marginTop: "0.5rem", fontSize: "13px", color: "#555" }}>
-              {Object.entries(latestScore.featureBreakdown).map(([k, v]) => (
-                <span key={k} style={{ marginRight: "12px" }}>
-                  {k}: {v}
-                </span>
+            <div className="feature-grid">
+              {Object.entries(latestScore.featureBreakdown).map(([key, value]) => (
+                <div key={key} className="feature-item">
+                  <div className="feature-label">{formatFeatureName(key)}</div>
+                  <div className="feature-value" style={{ color: featureColor(value) }}>
+                    {typeof value === "number" ? (value % 1 === 0 ? value : value.toFixed(1)) : value}
+                  </div>
+                  <div className="feature-bar">
+                    <div
+                      className="feature-bar-fill"
+                      style={{
+                        width: `${Math.min(100, Number(value))}%`,
+                        backgroundColor: featureColor(value),
+                      }}
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           )}
         </div>
       )}
 
-      <div style={{ marginTop: "1.5rem" }}>
-        <h2>Signal Timeline ({company.signals.length})</h2>
-        {company.signals.length === 0 && (
-          <p style={{ color: "#999" }}>No signals recorded.</p>
-        )}
+      {/* Triage actions */}
+      <div className="triage-actions">
+        <form action={`/api/triage`} method="POST" style={{ display: "contents" }}>
+          <input type="hidden" name="companyId" value={company.id} />
+          <input type="hidden" name="action" value="interested" />
+          <button type="submit" className="triage-btn interested">
+            Interested
+          </button>
+        </form>
+        <form action={`/api/triage`} method="POST" style={{ display: "contents" }}>
+          <input type="hidden" name="companyId" value={company.id} />
+          <input type="hidden" name="action" value="snooze" />
+          <button type="submit" className="triage-btn">
+            Snooze
+          </button>
+        </form>
+        <form action={`/api/triage`} method="POST" style={{ display: "contents" }}>
+          <input type="hidden" name="companyId" value={company.id} />
+          <input type="hidden" name="action" value="pass" />
+          <button type="submit" className="triage-btn pass">
+            Pass
+          </button>
+        </form>
+      </div>
+
+      {/* Signal timeline */}
+      <h2 className="section-heading">
+        Signal Timeline ({company.signals.length})
+      </h2>
+      {company.signals.length === 0 && (
+        <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
+          No signals recorded yet.
+        </p>
+      )}
+      <div className="timeline">
         {company.signals.map((signal) => (
-          <div
-            key={signal.id}
-            style={{
-              padding: "0.5rem 0",
-              borderBottom: "1px solid #f0f0f0",
-              fontSize: "14px",
-            }}
-          >
-            <span style={{ color: "#3182ce", fontWeight: 500 }}>
-              [{signal.source}]
-            </span>{" "}
-            {signal.value ?? signal.type} —{" "}
-            <span style={{ color: "#999" }}>
-              {signal.detectedAt.toISOString().slice(0, 10)}
-            </span>
+          <div key={signal.id} className="timeline-item">
+            <div className={timelineSourceClass(signal.source)}>
+              {sourceLabel(signal.source)}
+            </div>
+            <div className="timeline-content">
+              <div className="timeline-title">
+                {signal.value ?? signal.type}
+              </div>
+              <div className="timeline-date">
+                {signal.source} &middot; {daysAgo(signal.detectedAt)}
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
+      {/* Score history */}
       {company.scoreHistory.length > 1 && (
-        <div style={{ marginTop: "1.5rem" }}>
-          <h2>Score History</h2>
-          {company.scoreHistory.map((score) => (
-            <div
-              key={score.id}
-              style={{
-                padding: "0.5rem 0",
-                borderBottom: "1px solid #f0f0f0",
-                fontSize: "14px",
-              }}
-            >
-              <strong>{score.score}</strong>{" "}
-              <span style={{ color: tierColor(score.tier) }}>
-                {score.tier}
-              </span>{" "}
-              — {score.createdAt.toISOString().slice(0, 10)}
-            </div>
-          ))}
-        </div>
+        <>
+          <h2 className="section-heading">Score History</h2>
+          <div className="score-card" style={{ padding: "0" }}>
+            {company.scoreHistory.map((score, i) => (
+              <div
+                key={score.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0.75rem 1rem",
+                  borderBottom: i < company.scoreHistory.length - 1 ? "1px solid var(--border)" : "none",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <span style={{ fontWeight: 700, fontSize: "1.125rem", color: scoreColor(score.score), fontVariantNumeric: "tabular-nums" }}>
+                    {score.score % 1 === 0 ? score.score : score.score.toFixed(1)}
+                  </span>
+                  <span className={`tier-badge ${tierClass(score.tier)}`}>
+                    {score.tier.toUpperCase()}
+                  </span>
+                </div>
+                <span style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>
+                  {score.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </main>
   );
