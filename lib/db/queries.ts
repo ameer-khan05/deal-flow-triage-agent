@@ -1,15 +1,21 @@
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, sql } from "drizzle-orm";
 import { getDb, schema } from "./index";
 
 export interface DealFeedItem {
   companyId: number;
   companyName: string;
   industry: string | null;
+  subSector: string | null;
+  estimatedStage: string | null;
+  oneLiner: string | null;
+  domain: string | null;
   score: number;
   tier: string;
   rationale: string | null;
   topSignal: string | null;
+  signalCount: number;
   isEarlyStealth: boolean | null;
+  featureBreakdown: Record<string, number> | null;
 }
 
 export async function getDealFeed(filters?: {
@@ -27,6 +33,7 @@ export async function getDealFeed(filters?: {
       score: schema.scores.score,
       tier: schema.scores.tier,
       rationale: schema.scores.rationale,
+      featureBreakdown: schema.scores.featureBreakdown,
       companyName: schema.companies.name,
       industry: schema.companies.industry,
       isEarlyStealth: schema.companies.isEarlyStealth,
@@ -36,9 +43,9 @@ export async function getDealFeed(filters?: {
       schema.companies,
       eq(schema.scores.companyId, schema.companies.id)
     )
-    .orderBy(desc(schema.scores.score));
+    .orderBy(desc(schema.scores.createdAt));
 
-  // Deduplicate to latest score per company
+  // Deduplicate to latest score per company (first seen = most recent)
   const seen = new Set<number>();
   const results: DealFeedItem[] = [];
 
@@ -57,18 +64,43 @@ export async function getDealFeed(filters?: {
       .where(eq(schema.signals.companyId, row.companyId))
       .limit(1);
 
+    // Get signal count for this company
+    const signalCountResult = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(schema.signals)
+      .where(eq(schema.signals.companyId, row.companyId));
+
+    // Get company details for extra fields
+    const companyDetails = await db
+      .select({
+        subSector: schema.companies.subSector,
+        estimatedStage: schema.companies.estimatedStage,
+        oneLiner: schema.companies.oneLiner,
+        domain: schema.companies.domain,
+      })
+      .from(schema.companies)
+      .where(eq(schema.companies.id, row.companyId))
+      .limit(1);
+
     results.push({
       companyId: row.companyId,
       companyName: row.companyName,
       industry: row.industry,
+      subSector: companyDetails[0]?.subSector ?? null,
+      estimatedStage: companyDetails[0]?.estimatedStage ?? null,
+      oneLiner: companyDetails[0]?.oneLiner ?? null,
+      domain: companyDetails[0]?.domain ?? null,
       score: row.score,
       tier: row.tier,
       rationale: row.rationale,
       topSignal: topSignals[0]?.value ?? null,
+      signalCount: signalCountResult[0]?.count ?? 0,
       isEarlyStealth: row.isEarlyStealth,
+      featureBreakdown: row.featureBreakdown ?? null,
     });
   }
 
+  results.sort((a, b) => b.score - a.score);
   return results;
 }
 
